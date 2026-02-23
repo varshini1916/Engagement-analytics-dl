@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Add Friends</title>
+</head>
+<body style="background:#111; color:white; font-family:sans-serif;">
+
+<div style="padding:20px;">
+    <a href="/" style="color:#00bfff;">⬅ Back</a>
+
+    <h2>Add Friends 🤝</h2>
+    <hr>
+
+    {% for user in users %}
+        <div style="background:#1c1c1c; padding:10px; margin-bottom:10px; border-radius:6px;">
+            {{ user.user.username }}
+            <a href="/follow/request/{{ user.user.id }}/"
+               style="color:#00ff99; margin-left:10px;">
+               Follow
+            </a>
+        </div>
+    {% empty %}
+        <p>No users found.</p>
+    {% endfor %}
+
+</div>
+
+</body>
+</html>

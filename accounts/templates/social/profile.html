@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Profile</title>
+</head>
+<body style="background:#111; color:white; font-family:sans-serif;">
+
+<div style="background:#000; padding:15px;">
+    <a href="/" style="color:#00bfff;">⬅ Back to Feed</a>
+</div>
+
+<div style="padding:20px;">
+
+<h2>{{ request.user.username }}'s Profile 👤</h2>
+<hr>
+
+<p>Email: {{ request.user.email }}</p>
+
+<!-- ✅ ADD THIS SECTION -->
+<h3>📊 Statistics</h3>
+
+<p>Followers: {{ request.user.followers.count }}</p>
+<p>Following: {{ request.user.following.count }}</p>
+<p>Posts: {{ request.user.post_set.count }}</p>
+
+<hr>
+
+<h3>Your Posts:</h3>
+
+{% for post in request.user.post_set.all %}
+    <div style="background:#1c1c1c; padding:10px; margin-bottom:10px; border-radius:6px;">
+        {{ post.caption }}
+    </div>
+{% empty %}
+    <p>No posts yet.</p>
+{% endfor %}
+
+</div>
+
+</body>
+</html>

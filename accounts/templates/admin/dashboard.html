@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Instaclone Admin Dashboard</title>
+</head>
+<body style="font-family:sans-serif; background:#111; color:white; padding:20px;">
+
+<h1>📊 Instaclone Admin Dashboard</h1>
+
+<hr>
+
+<h2>Statistics</h2>
+<ul>
+    <li>Total Users: {{ user_count }}</li>
+    <li>Total Posts: {{ post_count }}</li>
+    <li>Total Likes: {{ like_count }}</li>
+    <li>Total Comments: {{ comment_count }}</li>
+    <li>Total Shared Posts: {{ shared_post_count }}</li>
+</ul>
+
+<hr>
+
+<h2>🔥 Top Users</h2>
+<ul>
+    {% for user in top_users %}
+        <li>{{ user.username }} ({{ user.post_count }} posts)</li>
+    {% endfor %}
+</ul>
+
+<hr>
+
+<h2>❤️ Top Posts</h2>
+<ul>
+    {% for post in top_posts %}
+        <li>{{ post.author.username }} - {{ post.like_count }} likes</li>
+    {% endfor %}
+</ul>
+
+</body>
+</html>

@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Login</title>
+</head>
+<body style="background:linear-gradient(to right,#ff512f,#dd2476); font-family:sans-serif;">
+
+<div style="width:350px; margin:100px auto; background:white; padding:30px; border-radius:10px;">
+    <h2 style="text-align:center;">Login 🌈</h2>
+
+    <form method="POST">
+        {% csrf_token %}
+        <input type="text" name="username" placeholder="Username"
+            style="width:100%; padding:10px; margin:10px 0;"><br>
+
+        <input type="password" name="password" placeholder="Password"
+            style="width:100%; padding:10px; margin:10px 0;"><br>
+
+        <button type="submit"
+            style="width:100%; padding:10px; background:#dd2476; color:white; border:none;">
+            Login
+        </button>
+    </form>
+
+    <p style="text-align:center; margin-top:15px;">
+        Don’t have account?
+        <a href="/register/">Register</a>
+    </p>
+</div>
+
+</body>
+</html>

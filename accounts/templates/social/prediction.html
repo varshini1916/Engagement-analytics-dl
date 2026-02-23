@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>AI Post Optimization</title>
+</head>
+<body style="background:#111; color:white; text-align:center; padding:50px; font-family:sans-serif;">
+
+<h1>🤖 AI Post Optimization Report</h1>
+<hr style="width:50%;">
+
+
+
+<h2 style="color:#00bfff;">🧠 Sentiment: {{ sentiment }}</h2>
+
+<h2 style="color:orange;">🔥 Engagement Potential: {{ engagement_level }}</h2>
+
+<h2 style="color:#ffcc00;">
+    🤖 Predicted Likes: {{ predicted_likes }} ❤️
+</h2>
+
+<hr>
+
+<h2 style="color:#00ff99;">✨ AI Suggestions</h2>
+
+<div style="background:#1c1c1c; padding:20px; border-radius:10px; width:60%; margin:auto; text-align:left;">
+    {% for suggestion in suggestions %}
+        <p>• {{ suggestion }}</p>
+    {% endfor %}
+</div>
+
+<br><br>
+
+<a href="/" style="color:#00bfff; font-size:18px;">
+    ⬅ Back to Feed
+</a>
+
+</body>
+</html>

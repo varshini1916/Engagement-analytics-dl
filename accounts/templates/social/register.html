@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Register</title>
+</head>
+<body style="background:linear-gradient(to right,#00c6ff,#0072ff); font-family:sans-serif;">
+
+<div style="width:350px; margin:80px auto; background:white; padding:30px; border-radius:10px;">
+    <h2 style="text-align:center;">Register 📝</h2>
+
+    <form method="POST">
+        {% csrf_token %}
+        {{ form.as_p }}
+
+        <button type="submit"
+            style="width:100%; padding:10px; background:#0072ff; color:white; border:none;">
+            Register
+        </button>
+    </form>
+
+    <p style="text-align:center;">
+        Already have account?
+        <a href="/login/">Login</a>
+    </p>
+</div>
+
+</body>
+</html>

@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>InstaClone Feed</title>
+</head>
+<body style="margin:0; font-family:sans-serif; background:#111; color:white;">
+
+<!-- Navbar -->
+<div style="background:#000; padding:15px; display:flex; justify-content:space-between;">
+    <h2>InstaClone 🌈</h2>
+    <div>
+        <a href="/profile/" style="color:#00bfff; margin-right:15px;">Profile</a>
+
+        <a href="/analytics/" style="color:#00ff99; margin-right:15px;">Analytics</a>
+        
+        <a href="/logout/" style="color:#ff4d4d;">Logout</a>
+    </div>
+</div>
+
+<div style="padding:20px;">
+
+    {% if messages %}
+        {% for message in messages %}
+            <div style="background:#333; padding:10px; margin:10px 0; border-radius:5px; color:#00ff99;">
+                {{ message }}
+            </div>
+        {% endfor %}
+    {% endif %}
+
+    <a href="/post/create/" style="color:#00ff99;">➕ Create Post</a>
+    <hr>
+
+    <!-- FOLLOW REQUESTS -->
+    {% if follow_requests %}
+        <h3>📩 Follow Requests</h3>
+
+        {% for req in follow_requests %}
+            <div style="background:#222; padding:10px; margin-bottom:10px; border-radius:6px;">
+                {{ req.from_user.username }}
+
+                <form method="POST"
+                      action="{% url 'respond_follow_request' req.id %}"
+                      style="display:inline;">
+                    {% csrf_token %}
+                    <button name="action" value="accept"
+                            style="background:green; color:white; border:none; padding:4px 8px;">
+                        Accept
+                    </button>
+                    <button name="action" value="reject"
+                            style="background:red; color:white; border:none; padding:4px 8px;">
+                        Reject
+                    </button>
+                </form>
+            </div>
+        {% endfor %}
+        <hr>
+    {% endif %}
+
+    <!-- POSTS -->
+    {% for post in posts %}
+
+    <div style="background:#1c1c1c; padding:15px; margin-bottom:15px; border-radius:8px;">
+
+        <!-- HEADER -->
+        <div style="display:flex; justify-content:space-between; align-items:center;">
+
+            <div>
+                {% if post.author == request.user %}
+                    <input type="checkbox"
+                           class="post-checkbox"
+                           value="{{ post.id }}">
+                {% endif %}
+
+                <h4 style="margin:0; display:inline;">
+                    {{ post.author.username }}
+                </h4>
+
+                <br>
+
+                <small style="color:gray;">
+                    👥 {{ post.author.followers.count }} Followers
+                </small>
+            </div>
+
+            {% if post.author != request.user %}
+            <form method="POST"
+                  action="{% url 'send_follow_request' post.author.id %}">
+                {% csrf_token %}
+
+                {% if request.user in post.author.followers.all %}
+                    <button type="submit"
+                            style="padding:5px 10px; background:red; border:none; color:white; border-radius:5px;">
+                        Unfollow
+                    </button>
+                {% else %}
+                    <button type="submit"
+                            style="padding:5px 10px; background:#00bfff; border:none; color:white; border-radius:5px;">
+                        Follow
+                    </button>
+                {% endif %}
+            </form>
+            {% endif %}
+
+        </div>
+
+        <br>
+
+        <!-- CAPTION -->
+        <p>{{ post.caption }}</p>
+
+        <!-- IMAGE -->
+        {% if post.image %}
+            <img src="{{ post.image.url }}" width="300" style="border-radius:10px;">
+            <br><br>
+        {% endif %}
+
+        <!-- LIKE -->
+        <form action="{% url 'like_post' post.id %}"
+              method="POST"
+              style="display:inline;">
+            {% csrf_token %}
+            <button type="submit"
+                    style="background:#ff4d6d; border:none; padding:5px 10px; color:white; border-radius:5px;">
+                ❤️ Like
+            </button>
+        </form>
+
+        <span style="margin-left:10px;">
+            {{ post.like_set.count }} Likes
+        </span>
+
+        <!-- AI PREDICTION -->
+        {% if post.predicted_likes %}
+            <div style="color:#00ff99; margin-top:5px;">
+                🤖 AI Predicted: {{ post.predicted_likes }}
+            </div>
+        {% endif %}
+
+        <!-- SENTIMENT -->
+        {% if post.sentiment %}
+            <div style="color:#00bfff;">
+                🧠 Sentiment: {{ post.sentiment }}
+            </div>
+        {% endif %}
+
+        <!-- ENGAGEMENT SCORE -->
+        <div style="color:orange; margin-top:5px;">
+            🔥 Engagement Score: {{ post.engagement_score }}
+        </div>
+
+        <hr>
+
+        <!-- COMMENT -->
+        <form action="{% url 'comment_post' post.id %}" method="POST">
+            {% csrf_token %}
+            <input type="text"
+                   name="content"
+                   placeholder="Write a comment..."
+                   style="padding:5px; width:60%; border-radius:5px; border:none;">
+
+            <button type="submit"
+                    style="background:#00bfff; border:none; padding:5px 10px; color:white; border-radius:5px;">
+                Comment
+            </button>
+        </form>
+
+        <br>
+
+        {% for comment in post.comment_set.all %}
+            <div style="margin-left:15px;">
+                <b>{{ comment.user.username }}</b> : {{ comment.content }}
+            </div>
+        {% empty %}
+            <small style="color:gray;">No comments yet.</small>
+        {% endfor %}
+
+    </div>
+
+    {% empty %}
+        <p>No posts yet.</p>
+    {% endfor %}
+
+    <!-- BULK DELETE -->
+    <hr>
+
+    <form method="POST" action="{% url 'bulk_delete_posts' %}" id="bulkDeleteForm">
+        {% csrf_token %}
+
+        <div id="selectedContainer"></div>
+
+        <button type="submit"
+                style="background:red; color:white; padding:8px 15px; border:none; border-radius:5px;">
+            🗑 Delete Selected Posts
+        </button>
+    </form>
+
+</div>
+
+<!-- JAVASCRIPT -->
+<script>
+document.getElementById("bulkDeleteForm").addEventListener("submit", function() {
+
+    let container = document.getElementById("selectedContainer");
+    container.innerHTML = "";
+
+    let checkboxes = document.querySelectorAll(".post-checkbox:checked");
+
+    checkboxes.forEach(cb => {
+        let input = document.createElement("input");
+        input.type = "hidden";
+        input.name = "selected_posts";
+        input.value = cb.value;
+        container.appendChild(input);
+    });
+
+});
+</script>
+
+</body>
+</html>
